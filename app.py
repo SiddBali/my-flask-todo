@@ -1,29 +1,72 @@
-from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-
+from flask import Flask, jsonify, render_template, request
+import mysql.connector
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Pass%3993@localhost/todo_app"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+con=mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Pass@3993",
+    database="todo"
+)
 
-db = SQLAlchemy(app)
+cursor = con.cursor()
+cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS task (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL
+    )
+    """
+)
+con.commit()
+cursor.close()
 
-class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+@app.route('/getTable', methods=["GET"])
+def get_tables():
+    cursor = con.cursor()
+    cursor.execute("SHOW TABLES;")
+    data = cursor.fetchall()
+    cursor.close()
+    table_names=[table[0] for table in data]
+    return jsonify({"tables": table_names}), 200
+
+
 
 
 tasks = []
 
-@app.route('/', methods=["GET","POST"])
+@app.route('/', methods=["GET", "POST"])
 def home():
 
     if request.method == "POST":
+
         task = request.form.get("task")
-        new_task = Task(title=task)
-        db.session.add(new_task)
-        db.session.commit()
-    return render_template("index.html", tasks=Task.query.all() )
+
+        if task and task.strip():
+
+            cursor = con.cursor()
+
+            query = "INSERT INTO task(title) VALUES(%s)"
+
+            cursor.execute(query, (task,))
+
+            con.commit()
+
+            cursor.close()
+
+    cursor = con.cursor()
+
+    cursor.execute("SELECT * FROM task")
+
+    tasks = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "index.html",
+        tasks=tasks
+    )
+
 
 @app.route('/about')
 def about():
