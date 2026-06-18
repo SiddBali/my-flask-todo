@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Pass%403993@localhost/todo_app"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Pass%3993@localhost/todo_app"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -11,9 +11,6 @@ db = SQLAlchemy(app)
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-
-with app.app_context():
-    db.create_all()
 
 
 tasks = []
