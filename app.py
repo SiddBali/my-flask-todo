@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 import mysql.connector
 app = Flask(__name__)
 
@@ -75,6 +75,64 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route("/edit/<int:task:id>")
+def edit_task(id):
+    if request.method == "POST":
+
+        updated_task = request.form.get("task")
+
+        cursor = con.cursor()
+
+        query = """
+        UPDATE task
+        SET title=%s
+        WHERE id=%s
+        """
+
+        cursor.execute(
+            query,
+            (updated_task, id)
+        )
+        con.commit()
+
+        cursor.close()
+
+        return redirect("/")
+
+    cursor = con.cursor()
+
+    query = "SELECT * FROM task WHERE id=%s"
+
+    cursor.execute(query, (id,))
+
+    task = cursor.fetchone()
+
+    cursor.close()
+
+    return render_template(
+        "edit.html",
+        task=task
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

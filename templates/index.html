@@ -12,6 +12,8 @@ To Do App
     <button type="submit">Add Task</button>
 </form>
 
+
+
 <h2>Tasks:</h2>
 {% if tasks %}
     <ul>
@@ -23,3 +25,15 @@ To Do App
     <p>No tasks yet. Add one to get started!</p>
 {% endif %}
 {% endblock %}
+
+<!-- add the edit button   -->
+
+{% for task in tasks %}
+
+<p>
+    {{ task[1] }}
+    
+    <a href="/edit/{{ task[0] }}">Edit</a>
+</p>
+
+{% endfor %}
