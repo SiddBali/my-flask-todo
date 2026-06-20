@@ -18,22 +18,13 @@ To Do App
 {% if tasks %}
     <ul>
     {% for task in tasks %}
-        <li>{{ task }}</li>
+        <li>
+            {{ task[1] }}
+            <a href="/edit/{{ task[0] }}">Edit</a>
+        </li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No tasks yet. Add one to get started!</p>
 {% endif %}
 {% endblock %}
-
-<!-- add the edit button   -->
-
-{% for task in tasks %}
-
-<p>
-    {{ task[1] }}
-    
-    <a href="/edit/{{ task[0] }}">Edit</a>
-</p>
-
-{% endfor %}
