@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="127.0.0.1",
+        host="localhost",
         port=3306,
         user="root",
         password="Pass@3993",
@@ -78,6 +78,8 @@ def about():
 def contact():
     return render_template('contact.html')
 
+
+# edit task 
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit_task(id):
     if request.method == "POST":
@@ -112,11 +114,23 @@ def edit_task(id):
     )
 
 
+# delete task
+@app.route("/delete/<int:id>")
+def delete_task(id):
 
+    con = get_db_connection()
+    cursor = con.cursor()
 
+    query = "DELETE FROM task WHERE id=%s"
 
+    cursor.execute(query, (id,))
 
+    con.commit()
 
+    cursor.close()
+    con.close()
+
+    return redirect("/")
 
 
 

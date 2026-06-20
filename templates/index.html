@@ -12,19 +12,20 @@ To Do App
     <button type="submit">Add Task</button>
 </form>
 
-
-
 <h2>Tasks:</h2>
 {% if tasks %}
-    <ul>
-    {% for task in tasks %}
-        <li>
-            {{ task[1] }}
-            <a href="/edit/{{ task[0] }}">Edit</a>
-        </li>
-    {% endfor %}
-    </ul>
+<ul>
+{% for task in tasks %}
+    <li>
+        {{ task[1] }}
+
+        <a href="/edit/{{ task[0] }}">Edit</a>
+
+        <a href="/delete/{{ task[0] }}">Delete</a>
+    </li>
+{% endfor %}
+</ul>
 {% else %}
-    <p>No tasks yet. Add one to get started!</p>
+<p>No tasks yet. Add one to get started!</p>
 {% endif %}
 {% endblock %}
